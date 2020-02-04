@@ -1,0 +1,3 @@
+plan test(){
+  return 'foo'
+}
