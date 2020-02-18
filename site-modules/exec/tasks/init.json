@@ -1,0 +1,10 @@
+{
+  "description": "Executes a command on the system",
+  "supports_noop": true,
+  "parameters": {
+    "command": {
+      "description": "The command to execute",
+      "type": "Optional[ String ]"
+    }
+  }
+}

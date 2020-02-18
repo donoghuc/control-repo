@@ -1,0 +1,9 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'json'
+
+args = JSON.parse(STDIN.read)
+
+puts({message: args['message']}.to_json)
+
+exit 0

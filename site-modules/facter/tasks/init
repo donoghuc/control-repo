@@ -1,0 +1,7 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'json'
+
+fact = JSON.parse(STDIN.read)['fact']
+
+exec('/opt/puppetlabs/bin/facter', fact)

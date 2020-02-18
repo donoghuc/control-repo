@@ -1,0 +1,7 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'json'
+
+command = JSON.parse(STDIN.read)['command']
+
+exec(command)

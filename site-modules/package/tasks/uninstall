@@ -1,0 +1,32 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'puppet'
+
+def uninstall(provider)
+  if [:absent, :purged].include?(provider.properties[:ensure])
+    {status: 'absent'}
+  else
+    provider.uninstall
+    provider.flush
+    {status: 'uninstalled'}
+  end
+end
+
+args = JSON.parse(STDIN.read)
+package = args['name']
+provider = args['provider']
+
+opts = {:name => package}
+opts[:provider] = provider if provider
+
+begin
+  provider = Puppet::Type.type(:package).new(opts).provider
+
+  result = uninstall(provider)
+  puts result.to_json
+  exit 0
+rescue Puppet::Error => e
+  puts({status: 'failure', error: e.message}.to_json)
+  exit 1
+end
+

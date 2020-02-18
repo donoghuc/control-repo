@@ -1,0 +1,8 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'json'
+
+args = JSON.parse(STDIN.read)
+setting = args['setting']
+
+exec("/opt/puppetlabs/puppet/bin/puppet", "agent", "--configprint", setting)

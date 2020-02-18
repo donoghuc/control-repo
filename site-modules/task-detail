@@ -1,0 +1,21 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'json'
+
+args = JSON.parse(STDIN.read)
+job = args['job']
+
+result = {}
+
+dir = "/opt/puppetlabs/pxp-agent/spool/#{job}"
+
+if File.exists?(dir)
+  %w[stdout stderr exitcode].each do |key|
+    filename = File.join(dir, key)
+    if File.exists?(filename)
+      result[key] = File.read(filename)
+    end
+  end
+end
+
+puts result.to_json

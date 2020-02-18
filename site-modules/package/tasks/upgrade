@@ -1,0 +1,28 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'puppet'
+
+def upgrade(provider)
+  provider.update
+  provider.flush
+  {version: provider.properties[:ensure]}
+end
+
+args = JSON.parse(STDIN.read)
+package = args['name']
+provider = args['provider']
+
+opts = {:name => package}
+opts[:provider] = provider if provider
+
+begin
+  provider = Puppet::Type.type(:package).new(opts).provider
+
+  result = upgrade(provider)
+  puts result.to_json
+  exit 0
+rescue Puppet::Error => e
+  puts({status: 'failure', error: e.message}.to_json)
+  exit 1
+end
+

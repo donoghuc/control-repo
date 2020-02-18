@@ -1,0 +1,21 @@
+{
+  "description": "Tests required and optional parameters",
+  "parameters": {
+    "required_param": {
+      "description": "This is a required parameter",
+      "type": "String"
+    },
+    "optional_param": {
+      "description": "This is an optional parameter",
+      "type": "Optional[String]"
+    },
+    "required_enum_param": {
+      "description": "This is a required enum parameter",
+      "type": "Enum[ foobla, all, the, things]"
+    },
+    "required_boolean_param": {
+      "description": "this is a required boolean parameter",
+      "type": "Boolean"
+    }
+  }
+}

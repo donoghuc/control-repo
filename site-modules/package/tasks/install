@@ -1,0 +1,32 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'puppet'
+
+def install(provider)
+  if [:absent, :purged].include?(provider.properties[:ensure])
+    provider.install
+    provider.flush
+    {status: 'installed', version: provider.properties[:ensure]}
+  else
+    {status: 'present', version: provider.properties[:ensure]}
+  end
+end
+
+args = JSON.parse(STDIN.read)
+package = args['name']
+provider = args['provider']
+
+opts = {:name => package}
+opts[:provider] = provider if provider
+
+begin
+  provider = Puppet::Type.type(:package).new(opts).provider
+
+  result = install(provider)
+  puts result.to_json
+  exit 0
+rescue Puppet::Error => e
+  puts({status: 'failure', error: e.message}.to_json)
+  exit 1
+end
+

@@ -1,0 +1,120 @@
+#!/opt/puppetlabs/puppet/bin/ruby
+
+require 'json'
+require 'open3'
+require 'pathname'
+
+class TaskError < RuntimeError; end
+
+class Task
+  attr_reader :module, :task
+
+  def initialize(task, input, output_files)
+    @stdout_file = output_files['stdout']
+    @stderr_file = output_files['stderr']
+    @exitcode_file = output_files['exitcode']
+    @input = input
+    @canonical_task = task
+    @module, @task = task.split('::', 2)
+    @task ||= 'init'
+  end
+
+  def run
+    begin
+      filename = find_task
+      @stdout, @stderr, status = Open3.capture3(filename, :stdin_data => @input)
+      @exitcode = status.exitstatus
+    rescue => e
+      @stdout = {error: e.message}.to_json
+      @stderr = nil
+      @exitcode = 255
+    ensure
+      write_result
+    end
+  end
+
+  private
+
+  def find_task
+    raise TaskError, "Invalid module name '#{@module}'" if @module !~ /\A[\w-]+\z/
+    raise TaskError, "Invalid task name '#{@task}'" if @task !~ /\A[\w-]+\z/
+
+    #task_dir = Pathname.new("/opt/puppetlabs/pxp-agent/tasks/#{@module}/tasks")
+    task_dir = Pathname.new(File.expand_path("../tasks/#{@module}/tasks", __dir__))
+    matching_files = Dir.glob("#{task_dir}/#{@task}*").reject {|f| f.end_with?('.json')}
+
+    raise TaskError, "Could not find task '#{@canonical_task}'" if matching_files.empty?
+    raise TaskError, "Found multiple matching files for task '#{@canonical_task}': #{matching_files.join(', ')}" if matching_files.length > 1
+
+    filename = matching_files.first
+
+    if ! File.file?(filename) || ! File.executable?(filename)
+      raise TaskError, "Task '#{task}' is not an executable file"
+    end
+
+    filename
+  end
+
+  def write_result
+    parsed_output = begin
+      JSON.parse(@stdout)
+    rescue JSON::ParserError => e
+      nil
+    end
+
+    if ! parsed_output.is_a?(Hash)
+      # Insert a newline so the output is printed aligned...
+      output = {stdout: "\n#{@stdout}"}
+      if ! @exitcode.zero?
+        output[:stderr] = "\n#{@stderr}"
+      end
+      @stdout = output.to_json
+    end
+
+    File.open(@stdout_file, 'w') {|f| f.print @stdout}
+    File.open(@stderr_file, 'w') {|f| f.print @stderr}
+    File.open(@exitcode_file, 'w') {|f| f.print @exitcode}
+  end
+end
+
+if ARGV.first == 'metadata'
+  puts <<-METADATA
+  {
+    "actions": [
+        {
+            "description": "Run a task",
+            "input": {
+                "properties": {
+                    "task": {
+                        "type": "string"
+                    },
+                    "input": {
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "task", "input"
+                ],
+                "type": "object",
+                "additionalProperties": true
+            },
+            "name": "run",
+            "results": {
+                "type": "object"
+            }
+        }
+    ],
+    "description": "Task runner module"
+  }
+  METADATA
+
+  exit 0
+end
+
+args = JSON.parse(STDIN.read)
+
+task = args['input']['task']
+input = args['input']['input'].to_json
+output_files = args['output_files']
+
+Task.new(task, input, output_files).run

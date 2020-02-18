@@ -1,0 +1,7 @@
+{
+  "description": "Complex types for testing",
+  "parameters": {
+    "maybe_enum": { "type": "Optional[Enum[yes, no, maybe]]" },
+    "variant_enum": { "type": "Variant[Enum[yes, no, maybe], Boolean]" }
+  }
+}

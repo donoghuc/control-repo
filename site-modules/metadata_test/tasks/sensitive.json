@@ -1,0 +1,30 @@
+{
+  "description": "Tests sensitive parameters",
+  "parameters": {
+    "required_sensitive": {
+      "description": "This is a required sensitive parameter",
+      "type": "String",
+      "sensitive": true
+    },
+    "i18n_sensitive": {
+      "description": "This is a required non-english sensitive parameter",
+      "type": "String",
+      "sensitive": true
+    },
+    "optional_sensitive": {
+      "description": "This is an optional sensitive parameter",
+      "type": "Optional[String]",
+      "sensitive": true
+    },
+    "sensitive_enum": {
+      "description": "This is a required sensitive enum parameter",
+      "type": "Enum[ foobla, all, the, things]",
+      "sensitive": true
+    },
+    "sensitive_boolean": {
+      "description": "This is a required boolean parameter",
+      "type": "Boolean",
+      "sensitive": true
+    }
+  }
+}
