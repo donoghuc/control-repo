@@ -1,0 +1,28 @@
+parameters:
+  targets:
+    type: TargetSpec
+    description: Puppet master host
+  log_message:
+    type: String
+    description: Message to search for in the logs 
+  out_message:
+    type: Optional[String]
+    description: Just a message to surface durring plan execution
+    default: hi
+
+steps:
+  - eval: |
+      warning($log_message)
+      out::message($out_message)
+    description: Log data to orch logs and to console
+  - command: "cat /var/log/puppetlabs/orchestration-services/orchestration-services.log | grep '${log_message}'"
+    target: $targets
+    name: logs
+    description: Search the Orch logs
+  - eval: |
+      out::message($logs.first.to_data['result']['stdout'])
+    description: Print logs to the console
+
+return: Thanks for watching the demo!
+
+
