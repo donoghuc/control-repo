@@ -6,7 +6,10 @@ forge 'https://forge.puppet.com'
 mod 'puppetlabs/stdlib',  '6.0.0'
 #mod 'puppetlabs/concat',  '6.0.0'
 mod 'puppetlabs-dsc', '1.9.4'
-
+#mod 'puppetlabs-bolt_shim', :latest
+mod 'puppetlabs-apply_helpers',
+  git:    'https://github.com/donoghuc/puppetlabs-apply_helpers',
+  branch: 'apply-helpers'
 
 # Modules from Git
 # Examples: https://github.com/puppetlabs/r10k/blob/master/doc/puppetfile.mkd#examples
