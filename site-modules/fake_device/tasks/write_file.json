@@ -1,0 +1,15 @@
+{
+  "description": "Writes a file on the host to the path specified in connection information",
+  "input_method": "stdin",
+  "remote": true,
+  "parameters": {
+    "content": {
+      "description": "Content to write to the file",
+      "type": "String"
+    }
+  },
+  "files": [
+    "fake_device/lib/puppet/transport/fake_device.rb",
+    "fake_device/lib/puppet/transport/schema/fake_device.rb"
+  ]
+}

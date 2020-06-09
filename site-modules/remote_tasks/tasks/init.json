@@ -1,0 +1,7 @@
+{
+  "remote": true,
+  "description": "Arbitrary remote task",
+  "files": [
+    "ruby_task_helper/files/task_helper.rb"
+  ]
+}
