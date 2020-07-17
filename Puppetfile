@@ -1,22 +1,4 @@
-forge 'https://forge.puppet.com'
-
-# Modules from the Puppet Forge
-# Versions should be updated to be the latest at the time you start
-#mod 'puppetlabs/inifile', '3.0.0'
-mod 'puppetlabs/stdlib',  '6.0.0'
-#mod 'puppetlabs/concat',  '6.0.0'
-mod 'puppetlabs-dsc', '1.9.4'
-#mod 'puppetlabs-bolt_shim', :latest
-mod 'puppetlabs-apply_helpers',
-  git:    'https://github.com/donoghuc/puppetlabs-apply_helpers',
-  branch: 'apply-helpers'
-
-# Modules from Git
-# Examples: https://github.com/puppetlabs/r10k/blob/master/doc/puppetfile.mkd#examples
-#mod 'apache',
-#  git:    'https://github.com/puppetlabs/puppetlabs-apache',
-#  commit: '1b6f89afdde0df7f9433a163d5c4b5328eac5779'
-
-#mod 'apache',
-#  git:    'https://github.com/puppetlabs/puppetlabs-apache',
-#  branch: 'docs_experiment'
+mod 'puppet-grafana', '6.0.0'
+mod 'quadriq-influxdb', '0.2.1'
+mod 'puppetlabs-stdlib', '5.2.0'
+mod 'puppet-telegraf', '2.1.0'
